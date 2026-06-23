@@ -152,18 +152,28 @@ if (bytes > 0) {
         if (path.length() <= 1)
             path = "/index.html";
 
-        if (method == "GET" || method == "POST") {
+        if (method == "HEAD")
+{
+    string response =
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/html\r\n"
+        "Content-Length: 0\r\n"
+        "\r\n";
 
-            sem_wait(&semaphore_mutex);
+    write(client_fd, response.c_str(), response.size());
+}
+else if (method == "GET" || method == "POST")
+{
+    sem_wait(&semaphore_mutex);
 
-            send_file(
-                client_fd,
-                path,
-                findContentType(ext)
-            );
+    send_file(
+        client_fd,
+        path,
+        findContentType(ext)
+    );
 
-            sem_post(&semaphore_mutex);
-        }
+    sem_post(&semaphore_mutex);
+}
     }
 
     printf("Closing connection.\n");
