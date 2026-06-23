@@ -48,9 +48,9 @@ string ContentType[] = {
 
 // HTTP response templates
 string Messages[] = {
-    "HTTP/1.1 200 Ok\r\n ",
-    "HTTP/1.0 400 Bad Request\r\nContent-Type: text/html\r\n\r\n"
+    "HTTP/1.1 200 OK\r\n",
+    "HTTP/1.1 400 Bad Request\r\nContent-Type: text/html\r\n\r\n"
     "<!doctype html><html><body>Server busy.</body></html>",
-    "HTTP/1.0 404 File not found\r\nContent-Type: text/html\r\n\r\n"
+    "HTTP/1.1 404 Not Found\r\nContent-Type: text/html\r\n\r\n"
     "<!doctype html><html><body>File not found.</body></html>"
 };
