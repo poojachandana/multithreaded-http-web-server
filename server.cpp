@@ -48,8 +48,12 @@ string findContentType(const string& ext) {
 // Send file to client
 void send_file(int client_fd, const string& path, const string& content_type) {
 
-    string header = Messages[HTTP_HEADER] + content_type;
-    write(client_fd, header.c_str(), header.length());
+    string header =
+    "HTTP/1.1 200 OK\r\n"
+    + content_type +
+    "Connection: close\r\n\r\n";
+
+write(client_fd, header.c_str(), header.length());
 
     string full_path = "public" + path;
 
