@@ -114,6 +114,13 @@ void* connection_handler(void* arg) {
 
     int bytes = read(client_fd, request_buf, REQUEST_SIZE - 1);
 
+printf("Bytes received: %d\n", bytes);
+
+if (bytes > 0) {
+    request_buf[bytes] = '\0';
+    printf("REQUEST:\n%s\n", request_buf);
+}
+
     if (bytes <= 0) {
 
         printf("Client disconnected or read error.\n");
