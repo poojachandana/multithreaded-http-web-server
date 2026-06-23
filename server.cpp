@@ -16,7 +16,7 @@ using namespace std;
 
 #define BUFFER_SIZE 4096
 #define REQUEST_SIZE 1024
-#define PORT 8080
+int PORT = 8080;
 #define MAX_THREADS 20
 
 sem_t semaphore_mutex;
@@ -173,7 +173,10 @@ void* connection_handler(void* arg) {
 }
 
 int main() {
-
+char* env_port = getenv("PORT");
+if (env_port) {
+    PORT = atoi(env_port);
+}
     sem_init(&semaphore_mutex, 0, 1);
 
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
