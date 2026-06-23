@@ -51,7 +51,7 @@ void send_file(int client_fd, const string& path, const string& content_type) {
     string header = Messages[HTTP_HEADER] + content_type;
     write(client_fd, header.c_str(), header.length());
 
-    string full_path = "./public" + path;
+    string full_path = "public" + path;
 
     int file_fd = open(full_path.c_str(), O_RDONLY);
 
@@ -172,11 +172,14 @@ void* connection_handler(void* arg) {
     pthread_exit(NULL);
 }
 
+
 int main() {
-char* env_port = getenv("PORT");
-if (env_port) {
-    PORT = atoi(env_port);
-}
+
+    char* env_port = getenv("PORT");
+    if (env_port) {
+        PORT = atoi(env_port);
+    }
+
     sem_init(&semaphore_mutex, 0, 1);
 
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -197,11 +200,10 @@ if (env_port) {
     );
 
     struct sockaddr_in addr;
-
     memset(&addr, 0, sizeof(addr));
 
     addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    addr.sin_addr.s_addr = INADDR_ANY;
     addr.sin_port = htons(PORT);
 
     if (bind(server_fd,
@@ -213,25 +215,22 @@ if (env_port) {
     }
 
     if (listen(server_fd, 10) < 0) {
-
         perror("listen failed");
         exit(1);
     }
 
-    printf("Server listening on http://localhost:%d\n", PORT);
+    printf("Server listening on port %d\n", PORT);
 
     while (1) {
 
         struct sockaddr_in client_addr;
-
         socklen_t len = sizeof(client_addr);
 
-        int client_fd =
-            accept(
-                server_fd,
-                (struct sockaddr*)&client_addr,
-                &len
-            );
+        int client_fd = accept(
+            server_fd,
+            (struct sockaddr*)&client_addr,
+            &len
+        );
 
         if (client_fd < 0) {
             perror("accept failed");
@@ -250,7 +249,6 @@ if (env_port) {
         printf("Client connected: %s\n", ip);
 
         pthread_t thread;
-
         int* client_ptr = new int(client_fd);
 
         if (pthread_create(
@@ -260,9 +258,7 @@ if (env_port) {
                 client_ptr) != 0) {
 
             perror("pthread_create failed");
-
             close(client_fd);
-
             delete client_ptr;
         }
 
@@ -270,7 +266,6 @@ if (env_port) {
     }
 
     sem_destroy(&semaphore_mutex);
-
     close(server_fd);
 
     return 0;
